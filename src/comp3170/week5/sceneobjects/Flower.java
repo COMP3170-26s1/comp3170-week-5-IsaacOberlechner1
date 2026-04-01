@@ -2,6 +2,8 @@ package comp3170.week5.sceneobjects;
 
 import static org.lwjgl.opengl.GL41.*;
 
+import java.awt.Color;
+
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -20,11 +22,14 @@ public class Flower extends SceneObject {
 	private final float HEIGHT = 1.0f;
 	private final float WIDTH = 0.1f;
 	private Vector3f colour = new Vector3f(0f, 0.5f, 0f); // Dark Green
+	private Vector3f yellow = new Vector3f(255, 255, 0);
 
 	private Vector4f[] vertices;
 	private int vertexBuffer;
 	private int[] indices;
 	private int indexBuffer;
+	
+	private FlowerHead flowerHead;
 
 	public Flower(int nPetals) {
 		shader = ShaderLibrary.instance.compileShader(VERTEX_SHADER, FRAGMENT_SHADER);		
@@ -59,6 +64,11 @@ public class Flower extends SceneObject {
 		};
 		    
 		indexBuffer = GLBuffers.createIndexBuffer(indices);
+		
+		flowerHead = new FlowerHead(nPetals, yellow);
+		flowerHead.setParent(this);
+		
+		System.out.println(flowerHead.getParent());
 	}
 	
 	public void drawSelf(Matrix4f mvpMatrix) {

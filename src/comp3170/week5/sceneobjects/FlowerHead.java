@@ -1,5 +1,11 @@
 package comp3170.week5.sceneobjects;
 
+import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
+import static org.lwjgl.opengl.GL11.glDrawElements;
+import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL15.glBindBuffer;
+
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -18,12 +24,49 @@ public class FlowerHead extends SceneObject {
 
 	private Vector4f[] vertices;
 	private int vertexBuffer;
+	private int[] indices;
+	private int indexBuffer;
 
 	public FlowerHead(int nPetals, Vector3f colour) {
 		
 		// TODO: Create the flower head. (TASK 1)
 		// Consider the best way to draw the mesh with the nPetals input. 
 		// Note that this may involve moving some code OUT of this class!
+		
+		vertices = new Vector4f[] {
+				new Vector4f(0, 1, 0, 1), // 0
+				new Vector4f(0.75f, 0.25f, 0, 1),
+				new Vector4f(-0.75f, 0.25f, 0, 1),
+				new Vector4f(0.9f, 0.5f, 0, 1),
+				new Vector4f(0.6f, -0.55f, 0, 1),
+				new Vector4f(-0.25f, 0.75f, 0, 1),
+				new Vector4f(0.9f, -0.5f, 0, 1),
+				new Vector4f(-0.25f, -0.75f, 0, 1),
+				new Vector4f(0.6f, 0.55f, 0, 1), // 8
+				new Vector4f(0, -1, 0, 1),
+				new Vector4f(-0.75f, -0.25f, 0, 1),
+				new Vector4f(0.75f, -0.25f, 0, 1),
+				new Vector4f(-0.9f, -0.5f, 0, 1),
+				new Vector4f(-0.6f, 0.55f, 0, 1), // 13
+				new Vector4f(0.25f, -0.75f, 0, 1),
+				new Vector4f(-0.9f, 0.5f, 0, 1),
+				new Vector4f(0.25f, 0.75f, 0, 1),
+				new Vector4f(-0.6f, -0.55f, 0, 1)
+		};
+		
+		vertexBuffer = GLBuffers.createBuffer(vertices);
+		
+		indices = new int[] {
+		    	0, 1, 2,
+		    	3, 4, 5, 
+		    	6, 7, 8,
+		    	9, 10, 11,
+		    	12, 13, 14,
+		    	15, 16, 17,
+//		    	0, 8, 13
+		};
+		    
+		indexBuffer = GLBuffers.createIndexBuffer(indices);
 		
 		shader = ShaderLibrary.instance.compileShader(VERTEX_SHADER, FRAGMENT_SHADER);		
 		
@@ -36,5 +79,12 @@ public class FlowerHead extends SceneObject {
 
 	public void drawSelf(Matrix4f mvpMatrix) {
 		// TODO: Add any appropriate draw code. (TASK 1)
+		shader.enable();
+		shader.setUniform("u_mvpMatrix", mvpMatrix);
+	    shader.setAttribute("a_position", vertexBuffer);
+	    shader.setUniform("u_colour", petalColour);	    
+	    
+	    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+	    glDrawElements(GL_TRIANGLES, indices.length, GL_UNSIGNED_INT, 0);	
 	}
 }
