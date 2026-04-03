@@ -3,6 +3,7 @@ package comp3170.week5.sceneobjects;
 import static org.lwjgl.opengl.GL41.*;
 
 import java.awt.Color;
+import java.util.ArrayList;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -30,7 +31,11 @@ public class Flower extends SceneObject {
 	private int[] indices;
 	private int indexBuffer;
 	
-	private FlowerHead flowerHead;
+	private ArrayList<FlowerHead> petals = new ArrayList<FlowerHead>();
+	
+	float accumulatedTime = 0;
+	boolean swayLeft = true;
+	boolean swayRight = false;
 
 	public Flower(int nPetals) {
 		shader = ShaderLibrary.instance.compileShader(VERTEX_SHADER, FRAGMENT_SHADER);		
@@ -71,10 +76,11 @@ public class Flower extends SceneObject {
 		float petalPos = 0;
 		
 		for(int i = 0; i < nPetals; i++) {
-			flowerHead = new FlowerHead(nPetals, yellow); // create a new flower head
-			flowerHead.setParent(this); 
-			flowerHead.getMatrix().translate(0, 1.0f, 0).rotateZ(petalPos); // rotate it's position relative to the last flower petal
+			FlowerHead petal = new FlowerHead(nPetals, yellow); // create a new flower head
+			petal.setParent(this); 
+			petal.getMatrix().translate(0, 1.0f, 0).rotateZ(petalPos); // rotate it's position relative to the last flower petal
 			petalPos += PETAL_ROTATION_OFFSET; // increase the petal rotation offset
+			petals.add(petal);
 		}
 	}
 	
@@ -90,5 +96,35 @@ public class Flower extends SceneObject {
 	
 	public void update(float dt) {
 		// TODO: make the flower sway. (TASK 5)
+		boolean change = false;
+		accumulatedTime += dt;
+		System.out.println((int)accumulatedTime % 3);
+		
+		if((int) accumulatedTime == 1) {
+			accumulatedTime = 0;
+			change = true;
+			System.out.println("change direction");
+		}
+		
+		if(swayLeft == true) {
+			this.getMatrix().rotateZ((float)Math.cos(1) * dt);
+		} else {
+			this.getMatrix().rotateZ((float)-Math.cos(1) * dt);
+		}
+		
+		if(swayLeft == true && change == true) {
+			swayLeft = false;
+			swayRight = true;
+		} else if(swayRight == true && change == true) {
+			swayRight = false;
+			swayLeft = true;
+		} else {
+			
+		}
+		
+		for(int i = 0; i < petals.size(); i++) {
+			petals.get(i).update(dt);;
+		}
+		
 	}
 }

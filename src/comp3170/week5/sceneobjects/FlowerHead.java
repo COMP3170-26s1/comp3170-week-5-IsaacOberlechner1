@@ -26,6 +26,8 @@ public class FlowerHead extends SceneObject {
 	private int vertexBuffer;
 	private int[] indices;
 	private int indexBuffer;
+	
+	private final float PETAL_ROTATION_SPEED = 2.0f;
 
 	public FlowerHead(int nPetals, Vector3f colour) {
 		
@@ -54,6 +56,7 @@ public class FlowerHead extends SceneObject {
 
 	public void update(float dt) {
 		// TODO: Make the flower head rotate. (TASK 5)
+		this.getMatrix().rotateZ((float) Math.sin(PETAL_ROTATION_SPEED * dt));
 	}
 
 	public void drawSelf(Matrix4f mvpMatrix) {
