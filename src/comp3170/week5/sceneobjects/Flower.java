@@ -21,6 +21,7 @@ public class Flower extends SceneObject {
 	
 	private final float HEIGHT = 1.0f;
 	private final float WIDTH = 0.1f;
+	private final float TAU = (float) (2 * Math.PI);
 	private Vector3f colour = new Vector3f(0f, 0.5f, 0f); // Dark Green
 	private Vector3f yellow = new Vector3f(255, 255, 0);
 
@@ -65,10 +66,16 @@ public class Flower extends SceneObject {
 		    
 		indexBuffer = GLBuffers.createIndexBuffer(indices);
 		
-		flowerHead = new FlowerHead(nPetals, yellow);
-		flowerHead.setParent(this);
+		// Create the petals
+		float PETAL_ROTATION_OFFSET = TAU / nPetals;
+		float petalPos = 0;
 		
-		System.out.println(flowerHead.getParent());
+		for(int i = 0; i < nPetals; i++) {
+			flowerHead = new FlowerHead(nPetals, yellow); // create a new flower head
+			flowerHead.setParent(this); 
+			flowerHead.getMatrix().translate(0, 1.0f, 0).rotateZ(petalPos); // rotate it's position relative to the last flower petal
+			petalPos += PETAL_ROTATION_OFFSET; // increase the petal rotation offset
+		}
 	}
 	
 	public void drawSelf(Matrix4f mvpMatrix) {

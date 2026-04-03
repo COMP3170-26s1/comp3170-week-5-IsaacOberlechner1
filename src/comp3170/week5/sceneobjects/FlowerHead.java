@@ -34,36 +34,15 @@ public class FlowerHead extends SceneObject {
 		// Note that this may involve moving some code OUT of this class!
 		
 		vertices = new Vector4f[] {
-				new Vector4f(0, 1, 0, 1), // 0
-				new Vector4f(0.75f, 0.25f, 0, 1),
-				new Vector4f(-0.75f, 0.25f, 0, 1),
-				new Vector4f(0.9f, 0.5f, 0, 1),
-				new Vector4f(0.6f, -0.55f, 0, 1),
-				new Vector4f(-0.25f, 0.75f, 0, 1),
-				new Vector4f(0.9f, -0.5f, 0, 1),
-				new Vector4f(-0.25f, -0.75f, 0, 1),
-				new Vector4f(0.6f, 0.55f, 0, 1), // 8
-				new Vector4f(0, -1, 0, 1),
-				new Vector4f(-0.75f, -0.25f, 0, 1),
-				new Vector4f(0.75f, -0.25f, 0, 1),
-				new Vector4f(-0.9f, -0.5f, 0, 1),
-				new Vector4f(-0.6f, 0.55f, 0, 1), // 13
-				new Vector4f(0.25f, -0.75f, 0, 1),
-				new Vector4f(-0.9f, 0.5f, 0, 1),
-				new Vector4f(0.25f, 0.75f, 0, 1),
-				new Vector4f(-0.6f, -0.55f, 0, 1)
+				new Vector4f(0, 0.5f, 0, 1), 
+				new Vector4f(0.25f, 0f, 0, 1),
+				new Vector4f(-0.25f, 0f, 0, 1),
 		};
 		
 		vertexBuffer = GLBuffers.createBuffer(vertices);
 		
 		indices = new int[] {
-		    	0, 1, 2,
-		    	3, 4, 5, 
-		    	6, 7, 8,
-		    	9, 10, 11,
-		    	12, 13, 14,
-		    	15, 16, 17,
-//		    	0, 8, 13
+		    	0, 1, 2
 		};
 		    
 		indexBuffer = GLBuffers.createIndexBuffer(indices);
@@ -82,7 +61,7 @@ public class FlowerHead extends SceneObject {
 		shader.enable();
 		shader.setUniform("u_mvpMatrix", mvpMatrix);
 	    shader.setAttribute("a_position", vertexBuffer);
-	    shader.setUniform("u_colour", petalColour);	    
+	    shader.setUniform("u_colour", petalColour);	  
 	    
 	    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
 	    glDrawElements(GL_TRIANGLES, indices.length, GL_UNSIGNED_INT, 0);	

@@ -5,6 +5,8 @@ import static org.lwjgl.opengl.GL41.*;
 
 import org.joml.Matrix4f;
 import org.joml.Vector2i;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import comp3170.OpenGLException;
 import comp3170.IWindowListener;
@@ -27,6 +29,10 @@ public class Week5 implements IWindowListener {
 	private long oldTime;
 	
 	private Scene scene;
+	
+	private Matrix4f viewMatrix  = new Matrix4f();
+	private Matrix4f projectionMatrix  = new Matrix4f();
+	private Matrix4f mvpMatrix = new Matrix4f();
 
 	public Week5()  throws OpenGLException {		
 		
@@ -59,10 +65,6 @@ public class Week5 implements IWindowListener {
 		input.clear(); // Run this to clear input before the next frame.
 		scene.update(input, deltaTime); // Use update() for scene logic and draw() to...well, draw.
 	}
-
-	private Matrix4f viewMatrix  = new Matrix4f();
-	private Matrix4f projectionMatrix  = new Matrix4f();
-	private Matrix4f mvpMatrix = new Matrix4f();
 	
 	public void draw() {
 		update();
@@ -72,8 +74,12 @@ public class Week5 implements IWindowListener {
 		
 		// TODO: Use the view and projection matricies to construct the mvpMatrix. (TASK 2)
 		//			Then send it down the scene graph!
-		scene.draw(mvpMatrix);
-			
+		scene.sceneCam().GetViewMatrix(viewMatrix); // sets the view matrix
+		scene.sceneCam().GetProjectionMatrix(projectionMatrix); // sets the projection matrix
+		mvpMatrix.identity();
+		mvpMatrix.mul(projectionMatrix).mul(viewMatrix); // multiplies view and projection to hold all calculations
+
+		scene.draw(mvpMatrix);	
 	}
 
 	@Override
@@ -83,6 +89,7 @@ public class Week5 implements IWindowListener {
 		this.height = height;
 		glViewport(0,0,width,height);
 		// TODO: Recalculate the projection matrix when the window is resized. (TASK 2)
+		scene.sceneCam().resize(width, height);
 	}
 
 	@Override
