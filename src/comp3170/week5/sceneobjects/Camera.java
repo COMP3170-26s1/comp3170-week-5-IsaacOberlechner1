@@ -50,6 +50,5 @@ public class Camera extends SceneObject {
 		}
 		
 		projectionMatrix.scaling(zoom * aspectRatio, zoom, aspectRatio);
-		System.out.println(projectionMatrix.m00() + " | " + projectionMatrix.m11());
 	}
 }

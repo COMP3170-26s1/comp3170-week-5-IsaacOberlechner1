@@ -4,6 +4,7 @@ import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL41.*;
 
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -12,6 +13,7 @@ import comp3170.OpenGLException;
 import comp3170.IWindowListener;
 import comp3170.ShaderLibrary;
 import comp3170.Window;
+import comp3170.week5.sceneobjects.Flower;
 import comp3170.InputManager;
 
 import java.io.File;
@@ -58,7 +60,20 @@ public class Week5 implements IWindowListener {
 		if (input.wasMouseClicked()) {
 			// TODO: Get the mouse position into NDC, and then into world space. (TASK 2)
 			input.getCursorPos(position); // This will get the mouse position in screen space.
-
+			
+			// screen to NDC
+			// NDC formula
+			float xPos = (2 * position.x / (float) width) - 1;
+			float yPos = 1 - (2 * position.y / (float) height);
+			Vector4f convertedPosition = new Vector4f(xPos, yPos, 0, 1);
+			
+			// NDC to world
+			// NDC to world is just inverted mvp
+			Matrix4f ndcToWorld = mvpMatrix.invert();
+			convertedPosition.mul(ndcToWorld);
+			
+			// Spawn flower
+			scene.createFlower(convertedPosition);
 			// TODO: Add a new flower at the mouse position. (TASK 3)
 		}
 		
